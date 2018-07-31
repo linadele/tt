@@ -159,10 +159,11 @@ int practice(int select)
 	  if(ch==strtotype[i][j]) wattroff(typewin,COLOR_PAIR(4));
 	  else if (isprint(ch)) wattron(typewin,COLOR_PAIR(4));
 	  mvwprintw(typewin,i*2+2,j+1,"%c",ch);
-	  if(j==COUNTS-1)
+	  if(j==COUNTS-2)
 	    {
 	      i++;
 	      j=0;
+	      wmove(typewin,i*2+2,1);
 	      if(i==LINES) break;
 	    }
 	  else j++;
