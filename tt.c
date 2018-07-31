@@ -62,16 +62,17 @@ void printmenu()
 			  {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
 
   char menu[][40]={"***欢迎使用tt.c!!!***\n",
-		    "",
-		    "",
-		    "",
-		    "1,0123456789",
-		    "2,asdfghjkl",
-		    "3,zxcvbnm",
-		    "4,qwertyuiop",
-		    "5,`-=[]\\;',./",
-		    "6,~!@#$%^&*()_+{}|:\"<>?",
-		    "7,退出",
+		   "",
+		   "",
+		   "",
+		   "1,0123456789",
+		   "2,asdfghjkl",
+		   "3,zxcvbnm",
+		   "4,qwertyuiop",
+		   "5,`-=[]\\;',./",
+		   "6,~!@#$%^&*()_+{}|:\"<>?",
+		   "7,ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		   "8,退出",
 		    "选择： "};
 
   clear();
@@ -84,7 +85,7 @@ void printmenu()
   attroff(COLOR_PAIR(2));  
   
   attron(A_BOLD|COLOR_PAIR(3));
-  for(int i=0;i<12;i++) mvprintw(row/2-5+i,WIDTH+5,"%s",menu[i]);
+  for(int i=0;i<13;i++) mvprintw(row/2-5+i,WIDTH+5,"%s",menu[i]);
   
   attroff(COLOR_PAIR(3));   
 }
@@ -101,7 +102,8 @@ int practice(int select)
 		      "zxcvbnm",
 		      "qwertyuiop",
 		      "`-=[]\\;',./",
-		      "~!@#$%^&*()_+{}|:\"<>?"};
+		      "~!@#$%^&*()_+{}|:\"<>?",
+		      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
 
   int a;
   int ch;
@@ -213,8 +215,8 @@ int main(void)
     echo();
     scanw("%d",&myselect);
     noecho();
-    if(myselect==7) break;
-    else if(myselect>0&&myselect<7)
+    if(myselect==8) break;
+    else if(myselect>0&&myselect<8)
     {
       exitstatus=practice(myselect);
       if(exitstatus==QIANGTUI) break;
