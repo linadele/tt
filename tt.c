@@ -148,7 +148,7 @@ int practice(int select)
       mvwprintw(typewin,1+i*2,1,"%s",strtotype[i]);
     }
   start=time(NULL);
-  mvwprintw(statuswin,1,1,"时间: 00:00:00    0字/分  正确率:100%%");
+  mvwprintw(statuswin,1,1,"时间:00:00:00   0字/分 正确率:100%%");
   mvwprintw(statuswin,1,45,"按F2返回主菜单");
   
   wrefresh(typewin);
@@ -172,7 +172,7 @@ int practice(int select)
       zong=i*(COUNTS-1)+j;
       if(zong==0) zql=100;
       else zql=zq*100/zong;
-      mvwprintw(statuswin,1,1,"时间：%02d:%02d:%02d  %3d字/分  正确率：%3d%%",hour,minute,second,zong*60/(t+1),zql);
+      mvwprintw(statuswin,1,1,"时间:%02d:%02d:%02d %3d字/分 正确率:%3d%%",hour,minute,second,zong*60/(t+1),zql);
       wmove(typewin,2+i*2,j+1);
       wrefresh(statuswin);
       if(isprint(ch))
@@ -196,8 +196,8 @@ int practice(int select)
 		  clear();
 		  refresh();
 		  wattroff(typewin,COLOR_PAIR(4));
-		  mvwprintw(typewin,TYPEWINH/2-1,1,"恭喜你完成任务！！！你的成绩是：");
-		  mvwprintw(typewin,TYPEWINH/2+2,1,"时间：%02d:%02d:%02d  %3d字/分  正确率：%3d%%",hour,minute,second,zong*60/(t+1),zql);
+		  mvwprintw(typewin,TYPEWINH/2-1,1,"恭喜你完成任务！！！你的成绩是:");
+		  mvwprintw(typewin,TYPEWINH/2+2,1,"时间:%02d:%02d:%02d %3d字/分 正确率:%3d%%",hour,minute,second,zong*60/(t+1),zql);
 		  wrefresh(typewin);
 		  sleep(5);
 		  break;
@@ -241,7 +241,6 @@ int main(void)
   setlocale(LC_ALL,"");
   initscr();
   raw();
-  //halfdelay(5);
   noecho();
   start_color();
   init_pair(2,COLOR_BLACK,COLOR_BLUE|COLOR_RED);
