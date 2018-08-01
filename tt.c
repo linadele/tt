@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <locale.h>
 #include <string.h>
+#include <unistd.h>
 
 #define HEIGHT 10
 #define WIDTH  20
@@ -93,10 +94,14 @@ void printmenu()
 
 int practice(int select)
 {
+  time_t start,end;
+  int hour,minute,second;
+  int t;
   WINDOW *typewin;
   WINDOW *statuswin;
   int status=ZHENGCHANG;
   char strtotype[LINES][COUNTS];
+  char usertyped[LINES][COUNTS];
   char charset[][40]={"0123456789",
 	  	      "asdfghjkl",
 		      "zxcvbnm",
@@ -107,7 +112,7 @@ int practice(int select)
 
   int a;
   int ch;
-
+  int zq,zql,zong;
   int i,j;
   
   for(int i=0;i<LINES;i++)
@@ -128,11 +133,12 @@ int practice(int select)
   refresh();
   typewin = newwin(TYPEWINH,WINW,5,10);
   keypad(typewin,TRUE);
+  wtimeout(typewin,500);
   statuswin = newwin(STATUSWINH,WINW,5+1+TYPEWINH,10);
   wattron(typewin,COLOR_PAIR(2));
   box(typewin,'*','+');
   wattroff(typewin,COLOR_PAIR(2));
-  box(statuswin,':','.');
+  box(statuswin,0,0);
 
   mvprintw(3,27,"开始练习%d！！！",select);
   refresh();
@@ -140,9 +146,10 @@ int practice(int select)
   for(int i=0;i<LINES;i++)
     {
       mvwprintw(typewin,1+i*2,1,"%s",strtotype[i]);
-    }	    
-  mvwprintw(statuswin,1,1,"时间: 00:00:00  进度: 0%%");
-  mvwprintw(statuswin,1,38,"按F2返回主菜单");
+    }
+  start=time(NULL);
+  mvwprintw(statuswin,1,1,"时间: 00:00:00    0字/分  正确率:100%%");
+  mvwprintw(statuswin,1,45,"按F2返回主菜单");
   
   wrefresh(typewin);
   wrefresh(statuswin);
@@ -151,12 +158,31 @@ int practice(int select)
   j=0;
   wmove(typewin,2,1);
   
+  zq=0;
+  
   while(1)
     {
       ch=wgetch(typewin);
+      end=time(NULL);
+      t=difftime(end,start);
+      second=t%60;
+      minute=t/60;
+      minute=minute%60;
+      hour=t/3600;
+      zong=i*(COUNTS-1)+j;
+      if(zong==0) zql=100;
+      else zql=zq*100/zong;
+      mvwprintw(statuswin,1,1,"时间：%02d:%02d:%02d  %3d字/分  正确率：%3d%%",hour,minute,second,zong*60/(t+1),zql);
+      wmove(typewin,2+i*2,j+1);
+      wrefresh(statuswin);
       if(isprint(ch))
 	{
-	  if(ch==strtotype[i][j]) wattroff(typewin,COLOR_PAIR(4));
+	  usertyped[i][j]=ch;
+	  if(ch==strtotype[i][j])
+	    {
+	      wattroff(typewin,COLOR_PAIR(4));
+	      zq++;
+	    }
 	  else if (isprint(ch)) wattron(typewin,COLOR_PAIR(4));
 	  mvwprintw(typewin,i*2+2,j+1,"%c",ch);
 	  if(j==COUNTS-2)
@@ -164,7 +190,18 @@ int practice(int select)
 	      i++;
 	      j=0;
 	      wmove(typewin,i*2+2,1);
-	      if(i==LINES) break;
+	      if(i==LINES)
+		{
+		  wclear(typewin);
+		  clear();
+		  refresh();
+		  wattroff(typewin,COLOR_PAIR(4));
+		  mvwprintw(typewin,TYPEWINH/2-1,1,"恭喜你完成任务！！！你的成绩是：");
+		  mvwprintw(typewin,TYPEWINH/2+2,1,"时间：%02d:%02d:%02d  %3d字/分  正确率：%3d%%",hour,minute,second,zong*60/(t+1),zql);
+		  wrefresh(typewin);
+		  sleep(5);
+		  break;
+		}  
 	    }
 	  else j++;
 	}
@@ -175,7 +212,7 @@ int practice(int select)
 	    {
 	      if(j!=0)
 		{
-	      
+		  if(usertyped[i][j-1]==strtotype[i][j-1]) zq--;
 		  mvwprintw(typewin,i*2+2,j," ");
 		  wmove(typewin,i*2+2,j);
 		  j--;
@@ -204,6 +241,7 @@ int main(void)
   setlocale(LC_ALL,"");
   initscr();
   raw();
+  //halfdelay(5);
   noecho();
   start_color();
   init_pair(2,COLOR_BLACK,COLOR_BLUE|COLOR_RED);
